@@ -9,7 +9,10 @@
 * Unit Testing with Mockito
 * Instrumented Testing using Espresso
 * Retrofit
+* [Migration to MVI](https://github.com/ollerandres/bhtt/tree/enhancement/mvi)
+* Caching Strategy
+* Material Design
+* Few animations on cardviews
 
 ## WIP
-* Migrating to MVI
-* Cache Strategy
+* Probably more to come :)
