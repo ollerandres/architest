@@ -12,4 +12,4 @@
 
 ## WIP
 * Migrating to MVI
-* Cache Strategy
+* Caching Strategy
