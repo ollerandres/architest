@@ -1,4 +1,4 @@
-package com.andresoller.presentation.postdetail
+package com.andresoller.presentation.postdetails
 
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.domain.interactors.posts.PostsInteractor
@@ -22,16 +22,16 @@ import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
 
-class PostDetailPresenterTest {
+class PostDetailsPresenterTest {
 
     @Mock
     lateinit var interactor: PostsInteractor
     @Mock
-    lateinit var view: PostDetailView
+    lateinit var view: PostDetailsView
     @Mock
     lateinit var disposable: CompositeDisposable
     @InjectMocks
-    lateinit var presenter: PostDetailPresenter
+    lateinit var presenter: PostDetailsPresenter
 
     @Before
     fun setUp() {

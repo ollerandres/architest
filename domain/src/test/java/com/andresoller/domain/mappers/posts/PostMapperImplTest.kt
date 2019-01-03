@@ -1,6 +1,7 @@
 package com.andresoller.domain.mappers.posts
 
 import com.andresoller.data.model.*
+import com.andresoller.domain.interactors.posts.mapper.PostMapperImpl
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

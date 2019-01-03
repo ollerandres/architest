@@ -126,7 +126,7 @@ internal class PostsPresenterTest {
         verify(view).startLoading()
         verify(interactor).getPosts()
         verify(view).stopLoading()
-        verify(view).loadPosts(posts)
+        verify(view).loadPostsIntent(posts)
     }
 
     @Test

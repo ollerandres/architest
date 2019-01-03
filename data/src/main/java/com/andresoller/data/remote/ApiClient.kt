@@ -1,4 +1,4 @@
-package com.andresoller.mlsearch.data.remote
+package com.andresoller.data.remote
 
 import com.andresoller.data.model.Comment
 import com.andresoller.data.model.Post
@@ -17,8 +17,8 @@ interface ApiClient {
     fun getUsers(): Observable<List<User>>
 
     @GET("comments")
-    fun getPostComments(@Query("postId")  postId: String): Observable<List<Comment>>
+    fun getPostComments(@Query("postId") postId: Int): Observable<List<Comment>>
 
     @GET("posts/{postId}")
-    fun getPostDetail(@Path("postId") postId: String): Observable<Post>
+    fun getPostDetail(@Path("postId") postId: Int): Observable<Post>
 }

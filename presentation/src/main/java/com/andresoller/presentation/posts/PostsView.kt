@@ -1,20 +1,13 @@
 package com.andresoller.presentation.posts
 
-import com.andresoller.domain.entities.PostInfo
+import com.andresoller.presentation.posts.viewstates.PostsViewState
+import io.reactivex.Observable
 
 interface PostsView {
 
-    fun loadPosts(posts: ArrayList<PostInfo>)
+    fun render(state: PostsViewState)
 
-    fun displayErrorBanner(message: String)
+    fun pullToRefreshIntent(): Observable<Boolean>
 
-    fun startLoading()
-
-    fun stopLoading()
-
-    fun displayNoResultsError(noResultMessage: String)
-
-    fun clearPosts()
-
-    fun noResultMessage(): String
+    fun loadPostsIntent(): Observable<Boolean>
 }

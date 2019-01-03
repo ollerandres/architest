@@ -1,12 +1,14 @@
 package com.andresoller.domain.di
 
 import com.andresoller.data.remote.RemoteRepository
+import com.andresoller.domain.interactors.postdetails.PostDetailsInteractor
+import com.andresoller.domain.interactors.postdetails.PostDetailsInteractorImpl
 import com.andresoller.domain.interactors.posts.PostsInteractor
 import com.andresoller.domain.interactors.posts.PostsInteractorImpl
-import com.andresoller.domain.mappers.postdetail.PostDetailMapper
-import com.andresoller.domain.mappers.postdetail.PostDetailMapperImpl
-import com.andresoller.domain.mappers.posts.PostMapper
-import com.andresoller.domain.mappers.posts.PostMapperImpl
+import com.andresoller.domain.interactors.postdetails.mapper.PostDetailMapper
+import com.andresoller.domain.interactors.postdetails.mapper.PostDetailMapperImpl
+import com.andresoller.domain.interactors.posts.mapper.PostMapper
+import com.andresoller.domain.interactors.posts.mapper.PostMapperImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -28,7 +30,13 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun providePostsInteractor(repository: RemoteRepository, postMapper: PostMapperImpl, postDetailMapper: PostDetailMapperImpl): PostsInteractor {
-        return PostsInteractorImpl(repository, postMapper, postDetailMapper)
+    fun providePostsInteractor(repository: RemoteRepository, postMapper: PostMapperImpl): PostsInteractor {
+        return PostsInteractorImpl(repository, postMapper)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostDetailsInteractor(repository: RemoteRepository, postDetailMapper: PostDetailMapperImpl): PostDetailsInteractor {
+        return PostDetailsInteractorImpl(repository, postDetailMapper)
     }
 }

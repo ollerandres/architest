@@ -1,13 +1,19 @@
 package com.andresoller.presentation.posts
 
+import android.util.Log
 import com.andresoller.domain.interactors.posts.PostsInteractor
+import com.andresoller.presentation.posts.mapper.PostsViewStateMapper
+import com.andresoller.presentation.posts.viewstates.PartialPostsViewState
+import com.andresoller.presentation.posts.viewstates.PostsViewState
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PostsPresenter @Inject constructor(private val postsInteractor: PostsInteractor,
-                                         private val disposable: CompositeDisposable) {
+class PostsPresenter @Inject constructor(private val interactor: PostsInteractor,
+                                         private val disposable: CompositeDisposable,
+                                         private val mapper: PostsViewStateMapper) {
 
     var view: PostsView? = null
 
@@ -17,39 +23,44 @@ class PostsPresenter @Inject constructor(private val postsInteractor: PostsInter
         }
     }
 
-    fun detachView() {
-        view = null
-    }
+    fun bindIntents(view: PostsView) {
+        attachView(view)
+        val pullToRefresh = view.pullToRefreshIntent()
+                .flatMap {
+                    return@flatMap interactor.getPosts()
+                            .subscribeOn(Schedulers.io())
+                            .map { return@map mapper.mapToViewState(it) }
+                            .onErrorReturn { throwable -> PartialPostsViewState.ErrorState(throwable.message.toString()) }
+                }
 
-    fun onResume() {
-        loadPosts()
-    }
+        val postsLoaded = view.loadPostsIntent()
+                .flatMap {
+                    return@flatMap interactor.getPosts()
+                            .subscribeOn(Schedulers.io())
+                            .map { return@map mapper.mapToViewState(it) }
+                            .onErrorReturn { throwable -> PartialPostsViewState.ErrorState(throwable.message.toString()) }
+                }
 
-    fun onRetry() {
-        view?.clearPosts()
-        loadPosts()
-    }
+        val allIntentsObservable = Observable.merge(listOf(postsLoaded, pullToRefresh)).observeOn(AndroidSchedulers.mainThread())
 
-    fun loadPosts() {
-        view?.startLoading()
+        val initialState = PostsViewState(progress = true)
+
         disposable.add(
-                postsInteractor.getPosts()
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            view?.stopLoading()
-                            if (it.isEmpty()) {
-                                view?.displayNoResultsError(view?.noResultMessage()!!)
-                            } else {
-                                view?.loadPosts(it)
-                            }
-                        }, {
-                            view?.displayErrorBanner(it.message.toString())
-                            view?.stopLoading()
-                        }))
+                allIntentsObservable.scan(initialState, this::reduce)
+                        .subscribe { view.render(it) }
+        )
     }
 
     fun onPause() {
+        view = null
         disposable.clear()
+    }
+
+    private fun reduce(previousState: PostsViewState, partialState: PartialPostsViewState): PostsViewState {
+        return when (partialState) {
+            is PartialPostsViewState.ProgressState -> PostsViewState(progress = true)
+            is PartialPostsViewState.ErrorState -> PostsViewState(error = true, errorMessage = partialState.errorMessage)
+            is PartialPostsViewState.PostsFetchedState -> PostsViewState(posts = partialState.posts)
+        }
     }
 }

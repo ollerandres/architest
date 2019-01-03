@@ -9,10 +9,10 @@ interface RemoteRepository {
 
     fun getPosts(): Observable<List<Post>>
 
-    fun getPostDetail(postId: String): Observable<Post>
+    fun getPostDetail(postId: Int): Observable<Post>
 
     fun getUsers(): Observable<List<User>>
 
-    fun getPostComments(postId: String): Observable<List<Comment>>
+    fun getPostComments(postId: Int): Observable<List<Comment>>
 
 }

@@ -4,8 +4,8 @@ import com.andresoller.data.model.*
 import com.andresoller.data.remote.RemoteRepository
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.domain.entities.PostInfo
-import com.andresoller.domain.mappers.postdetail.PostDetailMapperImpl
-import com.andresoller.domain.mappers.posts.PostMapperImpl
+import com.andresoller.domain.interactors.postdetails.mapper.PostDetailMapperImpl
+import com.andresoller.domain.interactors.posts.mapper.PostMapperImpl
 import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test

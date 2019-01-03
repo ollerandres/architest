@@ -1,4 +1,4 @@
-package com.andresoller.domain.mappers.posts
+package com.andresoller.domain.interactors.posts.mapper
 
 import com.andresoller.data.model.Post
 import com.andresoller.data.model.User

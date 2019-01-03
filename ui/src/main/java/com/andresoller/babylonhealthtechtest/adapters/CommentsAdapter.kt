@@ -1,9 +1,9 @@
 package com.andresoller.babylonhealthtechtest.adapters
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.andresoller.babylonhealthtechtest.R
 import com.andresoller.domain.entities.CommentInfo
 import kotlinx.android.synthetic.main.item_comments.view.*

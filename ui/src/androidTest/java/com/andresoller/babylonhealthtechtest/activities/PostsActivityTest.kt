@@ -43,7 +43,7 @@ class PostsActivityTest {
         onView(withText("Qui est esse"))
                 .perform(click())
 
-        intended(hasComponent(PostDetailActivity::class.java.name))
+        intended(hasComponent(PostDetailsActivity::class.java.name))
     }
 
     @After

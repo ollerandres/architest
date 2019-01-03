@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.PostDetailActivity"
+            android:name=".activities.PostDetailsActivity"
             android:parentActivityName=".activities.PostsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
