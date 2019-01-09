@@ -7,7 +7,11 @@ import javax.inject.Inject
 class PostsViewStateMapperImpl @Inject constructor() : PostsViewStateMapper {
 
     override fun mapToViewState(posts: ArrayList<PostInfo>): PartialPostsViewState {
-        return PartialPostsViewState.PostsFetchedState(posts)
+        return if (posts.isNotEmpty()) {
+            PartialPostsViewState.PostsFetchedState(posts)
+        } else {
+            PartialPostsViewState.ErrorState("No results")
+        }
     }
 
 }

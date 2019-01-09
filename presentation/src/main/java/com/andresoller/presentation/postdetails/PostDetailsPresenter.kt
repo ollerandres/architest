@@ -1,71 +1,73 @@
 package com.andresoller.presentation.postdetails;
 
-import android.util.Log
 import com.andresoller.domain.interactors.postdetails.PostDetailsInteractor
 import com.andresoller.presentation.postdetails.mapper.PostDetailsViewStateMapper
 import com.andresoller.presentation.postdetails.viewstates.PartialPostDetailsViewState
 import com.andresoller.presentation.postdetails.viewstates.PostDetailsViewState
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class PostDetailsPresenter @Inject constructor(private val interactor: PostDetailsInteractor,
-                                               private val disposable: CompositeDisposable,
-                                               private val mapper: PostDetailsViewStateMapper) {
+                                               private val mapper: PostDetailsViewStateMapper) : CoroutineScope {
 
-    var view: PostDetailsView? = null
-
-    fun attachView(view: PostDetailsView) {
-        if (this.view == null) {
-            this.view = view
-        }
-    }
+    private lateinit var job: Job
+    private lateinit var view: PostDetailsView
+    private lateinit var actualViewState: PostDetailsViewState
+    override val coroutineContext: CoroutineContext
+        get() = job
 
     fun onPause() {
-        view = null
-        disposable.clear()
+        job.cancel()
     }
 
-    fun bindIntents(view: PostDetailsView) {
-        attachView(view)
-
-        val pullToRefresh = view.pullToRefreshIntent()
-                .flatMap {
-                    return@flatMap interactor.getPostDetail(it)
-                            .subscribeOn(Schedulers.io())
-                            .map { return@map mapper.mapToViewState(it) }
-                            .onErrorReturn { throwable -> PartialPostDetailsViewState.ErrorState(throwable.message.toString()) }
-                }
-
-        val postIdIntent = view.postIdExtraIntent()
-                .flatMap {
-                    interactor.getPostDetail(it)
-                            .subscribeOn(Schedulers.io())
-                            .map { return@map mapper.mapToViewState(it) }
-                            .onErrorReturn { throwable -> PartialPostDetailsViewState.ErrorState(throwable.message.toString()) }
-                }
-
-        val scrolledRecyclerViewIntent = view.scrolledRecyclerViewIntent()
-                .flatMap { Observable.just(PartialPostDetailsViewState.PostCollapsingState(it)) }
-
-        val allIntentsObservable = Observable.merge(listOf(postIdIntent, pullToRefresh, scrolledRecyclerViewIntent)).observeOn(AndroidSchedulers.mainThread())
-
-        val initialState = PostDetailsViewState(progress = true)
-
-        disposable.add(
-                allIntentsObservable.scan(initialState, this::reduce)
-                        .subscribe { view.render(it) }
-        )
+    fun bind(view: PostDetailsView, postId: Int) {
+        job = Job()
+        this.view = view
+        loadPostDetails(postId)
     }
 
-    private fun reduce(previousState: PostDetailsViewState, partialState: PartialPostDetailsViewState): PostDetailsViewState {
-        return when (partialState) {
+    fun loadPostDetails(postId: Int) {
+        launch(context = job) {
+            actualViewState = PostDetailsViewState(progress = true)
+            withContext(Dispatchers.Main) {
+                view.render(actualViewState)
+            }
+
+            val partialState = try {
+                val posts = interactor.getPostDetail(postId)
+                mapper.mapToViewState(posts)
+            } catch (e: Exception) {
+                PartialPostDetailsViewState.ErrorState(e.message.toString())
+            }
+
+            val finalState = reduce(partialState)
+            withContext(Dispatchers.Main) {
+                view.render(finalState)
+            }
+        }
+    }
+
+    fun scrolledRecyclerView(firstItemVisible: Boolean) {
+        launch(context = job) {
+            withContext(Dispatchers.Main) {
+                val reducedState = reduce(PartialPostDetailsViewState.PostCollapsingState(firstItemVisible))
+                view.render(reducedState)
+            }
+        }
+    }
+
+    private fun reduce(partialState: PartialPostDetailsViewState): PostDetailsViewState {
+        actualViewState = when (partialState) {
             is PartialPostDetailsViewState.ProgressState -> PostDetailsViewState(progress = true)
             is PartialPostDetailsViewState.ErrorState -> PostDetailsViewState(error = true, errorMessage = partialState.errorMessage)
-            is PartialPostDetailsViewState.PostDetailsFetchedState -> PostDetailsViewState(collapsePost = previousState.collapsePost, postDetails = partialState.postdetails)
-            is PartialPostDetailsViewState.PostCollapsingState -> PostDetailsViewState(collapsePost = partialState.collapsePost, postDetails = previousState.postDetails)
+            is PartialPostDetailsViewState.PostDetailsFetchedState -> PostDetailsViewState(collapsePost = actualViewState.collapsePost, postDetails = partialState.postdetails)
+            is PartialPostDetailsViewState.PostCollapsingState -> PostDetailsViewState(collapsePost = partialState.collapsePost, postDetails = actualViewState.postDetails)
         }
+        return actualViewState
+    }
+
+    fun refresh(postId: Int) {
+        loadPostDetails(postId)
     }
 }

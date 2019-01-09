@@ -2,9 +2,9 @@ package com.andresoller.babylonhealthtechtest.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.andresoller.babylonhealthtechtest.BHApplication
 import com.andresoller.babylonhealthtechtest.EXTRA_POST_ID
 import com.andresoller.babylonhealthtechtest.R
@@ -15,10 +15,9 @@ import com.andresoller.presentation.posts.PostsPresenter
 import com.andresoller.presentation.posts.PostsView
 import com.andresoller.presentation.posts.viewstates.PostsViewState
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_posts.*
 import javax.inject.Inject
+import kotlin.coroutines.Continuation
 
 class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
@@ -26,6 +25,7 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
     lateinit var presenter: PostsPresenter
     @Inject
     lateinit var adapter: PostsAdapter
+    lateinit var result: Continuation<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +33,11 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
         setContentView(R.layout.activity_posts)
 
         swipe_to_refresh_layout.setColorSchemeColors(resources.getColor(R.color.colorAccent))
+        swipe_to_refresh_layout.setOnRefreshListener {
+            presenter.retry()
+        }
 
-        recycler_posts.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
+        recycler_posts.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
         recycler_posts.adapter = adapter
 
         adapter.navigationListener = this
@@ -42,11 +45,11 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
     override fun onResume() {
         super.onResume()
-        presenter.bindIntents(this)
+        presenter.bind(this)
     }
 
     override fun onPause() {
-        presenter.onPause()
+        presenter.unbind()
         super.onPause()
     }
 
@@ -68,14 +71,6 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
     override fun onPostTapped(postId: Int) {
         startActivity(Intent(this, PostDetailsActivity::class.java)
                 .putExtra(EXTRA_POST_ID, postId))
-    }
-
-    override fun pullToRefreshIntent(): Observable<Boolean> {
-        return swipe_to_refresh_layout.refreshes().map { true }
-    }
-
-    override fun loadPostsIntent(): Observable<Boolean> {
-        return Observable.just(true)
     }
 
     override fun render(state: PostsViewState) {

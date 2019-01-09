@@ -154,7 +154,7 @@ internal class PostsPresenterTest {
 
     @Test
     fun onPause_dispose() {
-        presenter.onPause()
+        presenter.unbind()
 
         verify(disposable).clear()
     }

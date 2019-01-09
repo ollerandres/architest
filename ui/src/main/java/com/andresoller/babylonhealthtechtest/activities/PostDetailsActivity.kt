@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.andresoller.babylonhealthtechtest.BHApplication
 import com.andresoller.babylonhealthtechtest.EXTRA_POST_ID
 import com.andresoller.babylonhealthtechtest.R
@@ -18,12 +18,8 @@ import com.andresoller.presentation.postdetails.PostDetailsPresenter
 import com.andresoller.presentation.postdetails.PostDetailsView
 import com.andresoller.presentation.postdetails.viewstates.PostDetailsViewState
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding3.recyclerview.scrollEvents
-import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_post_details.*
 import javax.inject.Inject
-
 
 class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
 
@@ -40,15 +36,24 @@ class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        recycler_comments.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
+        recycler_comments.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
         recycler_comments.adapter = adapter
 
         swipe_to_refresh_layout.setColorSchemeColors(resources.getColor(R.color.colorAccent))
+        swipe_to_refresh_layout.setOnRefreshListener {
+            presenter.refresh(intent.getIntExtra(EXTRA_POST_ID, -1))
+        }
+        recycler_comments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                presenter.scrolledRecyclerView((recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() > 0)
+            }
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        presenter.bindIntents(this)
+        presenter.bind(this, intent.getIntExtra(EXTRA_POST_ID, -1))
     }
 
     override fun onPause() {
@@ -69,6 +74,7 @@ class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
 
     private fun loadPostDetails(postDetailsInfo: PostDetailsInfo) {
         cv_post.visibility = if (postDetailsInfo.body.isNotEmpty()) VISIBLE else GONE
+        tv_post_comments_count.visibility = if (postDetailsInfo.comments.isNotEmpty()) VISIBLE else GONE
         tv_post_title.text = postDetailsInfo.title
         tv_post_user.text = postDetailsInfo.name
         tv_post_body.text = postDetailsInfo.body
@@ -98,18 +104,6 @@ class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
                         }
                     })
         }
-    }
-
-    override fun postIdExtraIntent(): Observable<Int> {
-        return Observable.just(intent.getIntExtra(EXTRA_POST_ID, -1))
-    }
-
-    override fun scrolledRecyclerViewIntent(): Observable<Boolean> {
-        return recycler_comments.scrollEvents().map { (recycler_comments.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() > 0 }
-    }
-
-    override fun pullToRefreshIntent(): Observable<Int> {
-        return swipe_to_refresh_layout.refreshes().map { intent.getIntExtra(EXTRA_POST_ID, -1) }
     }
 
     override fun render(state: PostDetailsViewState) {
