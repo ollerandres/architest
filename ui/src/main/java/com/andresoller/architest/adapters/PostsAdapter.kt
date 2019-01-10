@@ -1,4 +1,4 @@
-package com.andresoller.babylonhealthtechtest.adapters
+package com.andresoller.architest.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation.RELATIVE_TO_SELF
 import android.view.animation.TranslateAnimation
 import androidx.recyclerview.widget.RecyclerView
-import com.andresoller.babylonhealthtechtest.R
+import com.andresoller.architest.R
 import com.andresoller.domain.entities.PostInfo
 import kotlinx.android.synthetic.main.item_post.view.*
 import javax.inject.Inject

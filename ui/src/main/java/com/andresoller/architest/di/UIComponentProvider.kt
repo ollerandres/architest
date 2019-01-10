@@ -1,6 +1,6 @@
 package com.andresoller.mlsearch.presentation.di
 
-import com.andresoller.babylonhealthtechtest.di.UIComponent
+import com.andresoller.architest.di.UIComponent
 
 interface UIComponentProvider {
 

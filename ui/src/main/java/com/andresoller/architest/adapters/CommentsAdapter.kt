@@ -1,10 +1,10 @@
-package com.andresoller.babylonhealthtechtest.adapters
+package com.andresoller.architest.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.andresoller.babylonhealthtechtest.R
+import com.andresoller.architest.R
 import com.andresoller.domain.entities.CommentInfo
 import kotlinx.android.synthetic.main.item_comments.view.*
 import javax.inject.Inject

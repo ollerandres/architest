@@ -1,4 +1,4 @@
-package com.andresoller.babylonhealthtechtest.activities
+package com.andresoller.architest.activities
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -10,8 +10,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.runner.AndroidJUnit4
-import com.andresoller.babylonhealthtechtest.R
-import com.andresoller.babylonhealthtechtest.activities.idlingresource.SimpleIdlingResource
+import com.andresoller.architest.R
+import com.andresoller.architest.activities.idlingresource.SimpleIdlingResource
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
