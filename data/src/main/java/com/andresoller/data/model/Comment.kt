@@ -1,7 +1,12 @@
 package com.andresoller.data.model
 
-data class Comment(val name: String = "",
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "comments")
+data class Comment(@PrimaryKey @ColumnInfo(name = "id") val id: Int = -1,
+                   val name: String = "",
                    val postId: Int = -1,
-                   val id: Int = -1,
                    val body: String = "",
                    val email: String = "")

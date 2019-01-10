@@ -1,6 +1,6 @@
 package com.andresoller.domain.di
 
-import com.andresoller.data.remote.RemoteRepository
+import com.andresoller.data.repositories.PostsRepository
 import com.andresoller.domain.interactors.posts.PostsInteractor
 import com.andresoller.domain.interactors.posts.PostsInteractorImpl
 import com.andresoller.domain.mappers.postdetail.PostDetailMapper
@@ -28,7 +28,7 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun providePostsInteractor(repository: RemoteRepository, postMapper: PostMapperImpl, postDetailMapper: PostDetailMapperImpl): PostsInteractor {
-        return PostsInteractorImpl(repository, postMapper, postDetailMapper)
+    fun providePostsInteractor(postMapper: PostMapperImpl, postDetailMapper: PostDetailMapperImpl, postsRepository: PostsRepository): PostsInteractor {
+        return PostsInteractorImpl(postMapper, postDetailMapper, postsRepository)
     }
 }

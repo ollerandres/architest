@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Babylon Health Tech Test</string>
+    <string name="app_name">ArchiTest</string>
     <string name="action_settings">Settings</string>
     <string name="error_no_results">No results</string>
     <string name="retry">Retry</string>

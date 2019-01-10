@@ -1,15 +1,15 @@
 package com.andresoller.data.remote
 
+import com.andresoller.data.Repository
 import com.andresoller.data.model.Comment
 import com.andresoller.data.model.Post
 import com.andresoller.data.model.User
-import com.andresoller.mlsearch.data.remote.ApiClient
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class RemoteRepositoryImpl @Inject constructor(private val client: ApiClient) : RemoteRepository {
+class RemoteRepositoryImpl @Inject constructor(private val client: ApiClient) : Repository {
 
-    override fun getPosts(): Observable<List<Post>> {
+    override fun getPosts(): Observable<ArrayList<Post>> {
         return client.getPosts()
     }
 
@@ -17,11 +17,20 @@ class RemoteRepositoryImpl @Inject constructor(private val client: ApiClient) : 
         return client.getPostDetail(postId)
     }
 
-    override fun getUsers(): Observable<List<User>> {
+    override fun getUsers(): Observable<ArrayList<User>> {
         return client.getUsers()
     }
 
-    override fun getPostComments(postId: String): Observable<List<Comment>> {
+    override fun getPostComments(postId: String): Observable<ArrayList<Comment>> {
         return client.getPostComments(postId)
+    }
+
+    override fun savePosts(posts: ArrayList<Post>) {
+    }
+
+    override fun saveUsers(users: ArrayList<User>) {
+    }
+
+    override fun saveComments(comments: ArrayList<Comment>) {
     }
 }

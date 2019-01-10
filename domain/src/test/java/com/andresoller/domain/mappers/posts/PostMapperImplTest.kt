@@ -28,7 +28,7 @@ class PostMapperImplTest {
     }
 
     private fun getUserList(): List<User> {
-        return listOf(User("website", Address("zipcode", Geo(), "suite", "city", "street"), "phone", "name", Company(), 1, "Email", "username"))
+        return listOf(User(1, "website", Address("zipcode", Geo(), "suite", "city", "street"), "phone", "name", Company(), "Email", "username"))
     }
 
     private fun getPostsList(): List<Post> {

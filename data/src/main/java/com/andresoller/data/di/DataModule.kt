@@ -1,8 +1,12 @@
 package com.andresoller.data.di
 
-import com.andresoller.data.remote.RemoteRepository
+import android.content.Context
+import com.andresoller.data.Repository
+import com.andresoller.data.local.AppDatabase
+import com.andresoller.data.local.LocalRepositoryImpl
+import com.andresoller.data.remote.ApiClient
 import com.andresoller.data.remote.RemoteRepositoryImpl
-import com.andresoller.mlsearch.data.remote.ApiClient
+import com.andresoller.data.repositories.PostsRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -28,7 +32,25 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideRemoteRepository(apiClient: ApiClient): RemoteRepository {
+    fun provideRemoteRepository(apiClient: ApiClient): Repository {
         return RemoteRepositoryImpl(apiClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalRepository(appDatabase: AppDatabase): Repository {
+        return LocalRepositoryImpl(appDatabase)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostsRepository(remoteRepositoryImpl: RemoteRepositoryImpl, localRepositoryImpl: LocalRepositoryImpl): PostsRepository {
+        return PostsRepository(remoteRepositoryImpl, localRepositoryImpl)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(context: Context): AppDatabase {
+        return AppDatabase.getInstance(context)
     }
 }

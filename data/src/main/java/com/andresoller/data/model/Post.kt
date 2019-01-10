@@ -1,6 +1,12 @@
 package com.andresoller.data.model
 
-data class Post(val id: Int = -1,
-                val title: String = "",
-                val body: String = "",
-                val userId: Int = -1)
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "posts")
+data class Post(
+        @PrimaryKey @ColumnInfo(name = "id") val id: Int = -1,
+        val title: String = "",
+        val body: String = "",
+        val userId: Int = -1)

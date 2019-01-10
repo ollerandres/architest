@@ -1,11 +1,11 @@
 package com.andresoller.domain.interactors.posts
 
 import com.andresoller.data.model.*
-import com.andresoller.data.remote.RemoteRepository
+import com.andresoller.data.repositories.PostsRepository
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.domain.entities.PostInfo
-import com.andresoller.domain.mappers.postdetail.PostDetailMapperImpl
-import com.andresoller.domain.mappers.posts.PostMapperImpl
+import com.andresoller.domain.mappers.postdetail.PostDetailMapper
+import com.andresoller.domain.mappers.posts.PostMapper
 import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test
@@ -19,11 +19,11 @@ import org.mockito.MockitoAnnotations
 class PostsInteractorImplTest {
 
     @Mock
-    lateinit var repository: RemoteRepository
+    lateinit var postMapper: PostMapper
     @Mock
-    lateinit var postMapper: PostMapperImpl
+    lateinit var postDetailMapper: PostDetailMapper
     @Mock
-    lateinit var postDetailMapper: PostDetailMapperImpl
+    lateinit var repository: PostsRepository
     @InjectMocks
     lateinit var interactor: PostsInteractorImpl
 
@@ -36,7 +36,7 @@ class PostsInteractorImplTest {
     fun getPosts_successfulZip_ReturnPostInfoArrayList() {
         val posts = getPostsList()
         val users = getUserList()
-        val postsInfo = getPostInfo()
+        val postsInfo = getPostInfoList()
         `when`(repository.getPosts()).thenReturn(Observable.just(posts))
         `when`(repository.getUsers()).thenReturn(Observable.just(users))
         `when`(postMapper.mapToEntity(posts, users)).thenReturn(postsInfo)
@@ -71,19 +71,23 @@ class PostsInteractorImplTest {
         verify(postDetailMapper).mapToEntity(post, users, comments)
     }
 
-    private fun getPostInfo(): ArrayList<PostInfo> {
-        return arrayListOf(PostInfo(1, "title", "username", "address"))
+    private fun getPostsList(): ArrayList<Post> {
+        return arrayListOf(Post(1, "title", "body", 1))
     }
 
-    private fun getPostsList(): List<Post> {
-        return listOf(Post(1, "title", "body", 1))
+    private fun getPostInfoList(): ArrayList<PostInfo>? {
+        return arrayListOf(PostInfo(1, "title", "body", "address"))
     }
 
-    private fun getUserList(): List<User> {
-        return listOf(User("website", Address("zipcode", Geo(), "suite", "city", "street"), "phone", "name", Company(), 1, "email", "username"))
+    private fun getPostInfo(): Post {
+        return Post(1, "title", "body", 1)
     }
 
-    private fun getCommentsList(): List<Comment> {
-        return listOf(Comment("website", 1, 1, "body", "email"))
+    private fun getUserList(): ArrayList<User> {
+        return arrayListOf(User(1, "website", Address("zipcode", Geo(), "suite", "city", "street"), "phone", "name", Company(), "Email", "username"))
+    }
+
+    private fun getCommentsList(): ArrayList<Comment> {
+        return arrayListOf(Comment(1, "name", 1, "body", "Email"))
     }
 }

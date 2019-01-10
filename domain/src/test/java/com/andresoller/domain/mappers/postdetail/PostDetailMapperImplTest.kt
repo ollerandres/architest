@@ -28,7 +28,7 @@ class PostDetailMapperImplTest {
         assertEquals("Body", postInfo.comments[0].body)
         assertEquals("email", postInfo.comments[0].email)
         assertEquals(1, postInfo.comments[0].id)
-        assertEquals("Title", postInfo.comments[0].title)
+        assertEquals("Name", postInfo.comments[0].title)
     }
 
     private fun getPostInfo(): Post {
@@ -36,10 +36,10 @@ class PostDetailMapperImplTest {
     }
 
     private fun getUserList(): List<User> {
-        return listOf(User("website", Address("zipcode", Geo(), "suite", "city", "street"), "phone", "name", Company(), 1, "Email", "username"))
+        return listOf(User(1, "website", Address("zipcode", Geo(), "suite", "city", "street"), "phone", "name", Company(), "Email", "username"))
     }
 
     private fun getCommentsList(): List<Comment> {
-        return listOf(Comment("title", 1, 1, "body", "Email"))
+        return listOf(Comment(1, "name", 1, "body", "Email"))
     }
 }

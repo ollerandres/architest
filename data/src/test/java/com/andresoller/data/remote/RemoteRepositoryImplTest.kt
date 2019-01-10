@@ -3,7 +3,6 @@ package com.andresoller.data.remote
 import com.andresoller.data.model.Comment
 import com.andresoller.data.model.Post
 import com.andresoller.data.model.User
-import com.andresoller.mlsearch.data.remote.ApiClient
 import io.reactivex.Observable
 import junit.framework.Assert.assertEquals
 import org.junit.Before
@@ -28,7 +27,7 @@ class RemoteRepositoryImplTest {
 
     @Test
     fun getPosts_shouldCallApiClientGetPostsAndReturnObservable() {
-        val posts = Observable.just(List(1) { Post() })
+        val posts = Observable.just(arrayListOf(Post()))
         `when`(repository.getPosts()).thenReturn(posts)
 
         repository.getPosts()
@@ -50,7 +49,7 @@ class RemoteRepositoryImplTest {
 
     @Test
     fun getUsers_shouldCallApiClientGetUsersAndReturnObservable() {
-        val users = Observable.just(List(1) { User() })
+        val users = Observable.just(arrayListOf(User()))
         `when`(apiClient.getUsers()).thenReturn(users)
 
         repository.getUsers()
@@ -61,7 +60,7 @@ class RemoteRepositoryImplTest {
 
     @Test
     fun getPostComments_shouldCallApiClientGetCommentsAndReturnObservable() {
-        val posts = Observable.just(List(1) { Comment() })
+        val posts = Observable.just(arrayListOf(Comment()))
         `when`(apiClient.getPostComments("1")).thenReturn(posts)
 
         repository.getPostComments("1")
