@@ -1,4 +1,4 @@
-package com.andresoller.babylonhealthtechtest.activities
+package com.andresoller.architest.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -9,10 +9,10 @@ import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.andresoller.babylonhealthtechtest.BHApplication
-import com.andresoller.babylonhealthtechtest.EXTRA_POST_ID
-import com.andresoller.babylonhealthtechtest.R
-import com.andresoller.babylonhealthtechtest.adapters.CommentsAdapter
+import com.andresoller.architest.ArchitestApplication
+import com.andresoller.architest.EXTRA_POST_ID
+import com.andresoller.architest.R
+import com.andresoller.architest.adapters.CommentsAdapter
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.presentation.postdetails.PostDetailsPresenter
 import com.andresoller.presentation.postdetails.PostDetailsView
@@ -31,7 +31,7 @@ class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_details)
-        (application as BHApplication).getUIComponent().inject(this)
+        (application as ArchitestApplication).getUIComponent().inject(this)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

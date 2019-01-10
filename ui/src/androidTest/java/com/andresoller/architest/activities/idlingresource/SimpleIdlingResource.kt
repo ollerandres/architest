@@ -1,4 +1,4 @@
-package com.andresoller.babylonhealthtechtest.activities.idlingresource
+package com.andresoller.architest.activities.idlingresource
 
 import android.support.v7.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
