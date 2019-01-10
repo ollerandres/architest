@@ -1,15 +1,14 @@
-package com.andresoller.babylonhealthtechtest.adapters
+package com.andresoller.architest.adapters
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.andresoller.babylonhealthtechtest.R
+import com.andresoller.architest.R
 import com.andresoller.domain.entities.CommentInfo
 import kotlinx.android.synthetic.main.item_comments.view.*
 import javax.inject.Inject
 
-class CommentsAdapter @Inject constructor() : RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>() {
+class CommentsAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>() {
 
     private var comments: ArrayList<CommentInfo> = ArrayList()
 
@@ -30,7 +29,7 @@ class CommentsAdapter @Inject constructor() : RecyclerView.Adapter<CommentsAdapt
         notifyDataSetChanged()
     }
 
-    class CommentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class CommentsViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(commentsInfo: CommentInfo) {
             itemView.tv_title.text = commentsInfo.title

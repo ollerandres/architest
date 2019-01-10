@@ -1,4 +1,4 @@
-# BHHT
+# ArchiTest
 
 ## What will you find?
 * Clean Architecture using different patterns

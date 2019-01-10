@@ -1,4 +1,4 @@
-package com.andresoller.babylonhealthtechtest.di
+package com.andresoller.architest.di
 
 import com.andresoller.data.di.DataModule
 import com.andresoller.domain.di.DomainModule
@@ -11,6 +11,6 @@ import javax.inject.Singleton
     (DomainModule::class),
     (PresentationModule::class),
     (DataModule::class)])
-interface BHApplicationComponent {
+interface ArchitestApplicationComponent {
     fun getUIComponent(): UIComponent
 }

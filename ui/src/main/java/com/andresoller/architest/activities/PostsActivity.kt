@@ -1,15 +1,14 @@
-package com.andresoller.babylonhealthtechtest.activities
+package com.andresoller.architest.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.widget.LinearLayout
-import com.andresoller.babylonhealthtechtest.BHApplication
-import com.andresoller.babylonhealthtechtest.EXTRA_POST_ID
-import com.andresoller.babylonhealthtechtest.R
-import com.andresoller.babylonhealthtechtest.adapters.PostsAdapter
-import com.andresoller.babylonhealthtechtest.adapters.PostsAdapter.PostNavigationListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.andresoller.architest.ArchitestApplication
+import com.andresoller.architest.EXTRA_POST_ID
+import com.andresoller.architest.R
+import com.andresoller.architest.adapters.PostsAdapter
+import com.andresoller.architest.adapters.PostsAdapter.PostNavigationListener
 import com.andresoller.domain.entities.PostInfo
 import com.andresoller.presentation.posts.PostsPresenter
 import com.andresoller.presentation.posts.PostsView
@@ -27,13 +26,13 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (application as BHApplication).getUIComponent().inject(this)
+        (application as ArchitestApplication).getUIComponent().inject(this)
         setContentView(R.layout.activity_posts)
 
         swipe_to_refresh_layout.setOnRefreshListener { presenter.onRetry() }
         swipe_to_refresh_layout.setColorSchemeColors(resources.getColor(R.color.colorAccent))
 
-        recycler_posts.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
+        recycler_posts.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
         recycler_posts.adapter = adapter
 
         adapter.navigationListener = this

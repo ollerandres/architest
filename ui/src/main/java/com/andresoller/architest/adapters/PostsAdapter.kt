@@ -1,18 +1,18 @@
-package com.andresoller.babylonhealthtechtest.adapters
+package com.andresoller.architest.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
-import com.andresoller.babylonhealthtechtest.R
+import com.andresoller.architest.R
 import com.andresoller.domain.entities.PostInfo
 import kotlinx.android.synthetic.main.item_post.view.*
 import javax.inject.Inject
 
 
-class PostsAdapter @Inject constructor() : RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
+class PostsAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
 
     private var posts: ArrayList<PostInfo> = ArrayList()
     public var navigationListener: PostNavigationListener? = null
@@ -45,7 +45,7 @@ class PostsAdapter @Inject constructor() : RecyclerView.Adapter<PostsAdapter.Pos
         view.startAnimation(anim)
     }
 
-    class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class PostViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(postInfo: PostInfo, navigationListener: PostNavigationListener?) {
             itemView.tv_title.text = postInfo.title

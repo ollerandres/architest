@@ -1,11 +1,11 @@
-package com.andresoller.babylonhealthtechtest.activities.idlingresource
+package com.andresoller.architest.activities.idlingresource
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.IdlingResource.ResourceCallback
 
 
-class SimpleIdlingResource constructor(val recycler: RecyclerView) : IdlingResource {
+class SimpleIdlingResource constructor(val recycler: androidx.recyclerview.widget.RecyclerView) : IdlingResource {
 
     private var callback: ResourceCallback? = null
 

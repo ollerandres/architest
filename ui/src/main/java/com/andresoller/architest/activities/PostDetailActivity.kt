@@ -1,17 +1,15 @@
-package com.andresoller.babylonhealthtechtest.activities
+package com.andresoller.architest.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.LinearLayout
-import com.andresoller.babylonhealthtechtest.BHApplication
-import com.andresoller.babylonhealthtechtest.EXTRA_POST_ID
-import com.andresoller.babylonhealthtechtest.R
-import com.andresoller.babylonhealthtechtest.adapters.CommentsAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.andresoller.architest.ArchitestApplication
+import com.andresoller.architest.EXTRA_POST_ID
+import com.andresoller.architest.R
+import com.andresoller.architest.adapters.CommentsAdapter
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.presentation.postdetail.PostDetailPresenter
 import com.andresoller.presentation.postdetail.PostDetailView
@@ -30,17 +28,17 @@ class PostDetailActivity : AppCompatActivity(), PostDetailView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_detail)
-        (application as BHApplication).getUIComponent().inject(this)
+        (application as ArchitestApplication).getUIComponent().inject(this)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        recycler_comments.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
+        recycler_comments.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
         recycler_comments.adapter = adapter
-        recycler_comments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        recycler_comments.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                presenter.onCommentsScrolled((recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
+                presenter.onCommentsScrolled((recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
             }
         })
 
