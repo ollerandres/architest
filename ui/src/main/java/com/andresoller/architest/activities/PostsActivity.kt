@@ -16,16 +16,23 @@ import com.andresoller.presentation.posts.PostsView
 import com.andresoller.presentation.posts.viewstates.PostsViewState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_posts.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
 
-class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
+class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener, CoroutineScope {
 
     @Inject
     lateinit var presenter: PostsPresenter
     @Inject
     lateinit var adapter: PostsAdapter
-    lateinit var result: Continuation<Boolean>
+    private val loadDataChannel: Channel<Boolean> = Channel()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +41,7 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
         swipe_to_refresh_layout.setColorSchemeColors(resources.getColor(R.color.colorAccent))
         swipe_to_refresh_layout.setOnRefreshListener {
-            presenter.retry()
+            loadData(true)
         }
 
         recycler_posts.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
@@ -45,12 +52,15 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
     override fun onResume() {
         super.onResume()
-        presenter.bind(this)
+        presenter.bindIntents(this)
+        loadData(true)
     }
 
-    override fun onPause() {
-        presenter.unbind()
-        super.onPause()
+    override fun onStop() {
+        if (isFinishing) {
+            presenter.unbind()
+        }
+        super.onStop()
     }
 
     private fun loadPosts(posts: ArrayList<PostInfo>) {
@@ -71,6 +81,18 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
     override fun onPostTapped(postId: Int) {
         startActivity(Intent(this, PostDetailsActivity::class.java)
                 .putExtra(EXTRA_POST_ID, postId))
+    }
+
+    override fun loadDataIntent(): Channel<Boolean> {
+        return loadDataChannel
+    }
+
+    private fun loadData(loadData: Boolean) {
+        launch {
+            if (loadData) {
+                loadDataChannel.send(loadData)
+            }
+        }
     }
 
     override fun render(state: PostsViewState) {

@@ -4,7 +4,10 @@ import com.andresoller.domain.interactors.posts.PostsInteractor
 import com.andresoller.presentation.posts.mapper.PostsViewStateMapper
 import com.andresoller.presentation.posts.viewstates.PartialPostsViewState
 import com.andresoller.presentation.posts.viewstates.PostsViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -14,13 +17,13 @@ class PostsPresenter @Inject constructor(private val interactor: PostsInteractor
     private lateinit var job: Job
     private lateinit var view: PostsView
     override val coroutineContext: CoroutineContext
-        get() = job
+        get() = job + Dispatchers.Main
 
     fun unbind() {
         job.cancel()
     }
 
-    fun bind(view: PostsView) {
+    fun bindIntents(view: PostsView) {
         job = Job()
         this.view = view
         loadPosts()
@@ -28,20 +31,17 @@ class PostsPresenter @Inject constructor(private val interactor: PostsInteractor
 
     private fun loadPosts() {
         launch(context = job) {
-            val initialState = PostsViewState(progress = true)
-            withContext(Dispatchers.Main) {
+            while (view.loadDataIntent().receive()) {
+                val initialState = PostsViewState(progress = true)
                 view.render(initialState)
-            }
+                val partialState = try {
+                    val posts = interactor.getPosts()
+                    mapper.mapToViewState(posts)
+                } catch (e: Exception) {
+                    PartialPostsViewState.ErrorState(e.message.toString())
+                }
 
-            val partialState = try {
-                val posts = interactor.getPosts()
-                mapper.mapToViewState(posts)
-            } catch (e: Exception) {
-                PartialPostsViewState.ErrorState(e.message.toString())
-            }
-
-            val finalState = reduce(initialState, partialState)
-            withContext(Dispatchers.Main) {
+                val finalState = reduce(initialState, partialState)
                 view.render(finalState)
             }
         }
@@ -53,9 +53,5 @@ class PostsPresenter @Inject constructor(private val interactor: PostsInteractor
             is PartialPostsViewState.ErrorState -> PostsViewState(error = true, errorMessage = partialState.errorMessage)
             is PartialPostsViewState.PostsFetchedState -> PostsViewState(posts = partialState.posts)
         }
-    }
-
-    fun retry() {
-        loadPosts()
     }
 }

@@ -19,14 +19,25 @@ import com.andresoller.presentation.postdetails.PostDetailsView
 import com.andresoller.presentation.postdetails.viewstates.PostDetailsViewState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_post_details.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
+class PostDetailsActivity : AppCompatActivity(), PostDetailsView, CoroutineScope {
 
     @Inject
     lateinit var presenter: PostDetailsPresenter
     @Inject
     lateinit var adapter: CommentsAdapter
+    private val loadDataChannel: Channel<Boolean> = Channel()
+    private val onScrollChannel: Channel<Boolean> = Channel()
+    private val postIdChannel: Channel<Int> = Channel()
+    private val collapseStateChannel: Channel<Boolean> = Channel()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,20 +51,52 @@ class PostDetailsActivity : AppCompatActivity(), PostDetailsView {
         recycler_comments.adapter = adapter
 
         swipe_to_refresh_layout.setColorSchemeColors(resources.getColor(R.color.colorAccent))
-        swipe_to_refresh_layout.setOnRefreshListener {
-            presenter.refresh(intent.getIntExtra(EXTRA_POST_ID, -1))
-        }
+        swipe_to_refresh_layout.setOnRefreshListener { loadData(true) }
+
         recycler_comments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                presenter.scrolledRecyclerView((recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() > 0)
+                onScrolled((recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() > 0)
             }
         })
     }
 
+    fun onScrolled(firstItemVisible: Boolean) {
+        launch {
+            onScrollChannel.send(true)
+            collapseStateChannel.send(firstItemVisible)
+        }
+    }
+
+    override fun onScrollIntent(): Channel<Boolean> {
+        return onScrollChannel
+    }
+
+    override fun loadDataIntent(): Channel<Boolean> {
+        return loadDataChannel
+    }
+
+    override fun postIdChannel(): Channel<Int> {
+        return postIdChannel
+    }
+
+    override fun collapseStateChannel(): Channel<Boolean> {
+        return collapseStateChannel
+    }
+
+    private fun loadData(loadData: Boolean) {
+        launch {
+            if (loadData) {
+                loadDataChannel.send(loadData)
+                postIdChannel.send(intent.getIntExtra(EXTRA_POST_ID, -1))
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        presenter.bind(this, intent.getIntExtra(EXTRA_POST_ID, -1))
+        presenter.bindIntents(this)
+        loadData(true)
     }
 
     override fun onPause() {

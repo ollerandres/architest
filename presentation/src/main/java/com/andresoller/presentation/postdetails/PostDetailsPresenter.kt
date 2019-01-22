@@ -4,7 +4,10 @@ import com.andresoller.domain.interactors.postdetails.PostDetailsInteractor
 import com.andresoller.presentation.postdetails.mapper.PostDetailsViewStateMapper
 import com.andresoller.presentation.postdetails.viewstates.PartialPostDetailsViewState
 import com.andresoller.presentation.postdetails.viewstates.PostDetailsViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -15,43 +18,42 @@ class PostDetailsPresenter @Inject constructor(private val interactor: PostDetai
     private lateinit var view: PostDetailsView
     private lateinit var actualViewState: PostDetailsViewState
     override val coroutineContext: CoroutineContext
-        get() = job
+        get() = job + Dispatchers.Main
 
     fun onPause() {
         job.cancel()
     }
 
-    fun bind(view: PostDetailsView, postId: Int) {
+    fun bindIntents(view: PostDetailsView) {
         job = Job()
         this.view = view
-        loadPostDetails(postId)
+        loadPostDetails()
+        scrolledRecyclerView()
     }
 
-    fun loadPostDetails(postId: Int) {
+    fun loadPostDetails() {
         launch(context = job) {
-            actualViewState = PostDetailsViewState(progress = true)
-            withContext(Dispatchers.Main) {
+            while (view.loadDataIntent().receive()) {
+                actualViewState = PostDetailsViewState(progress = true)
                 view.render(actualViewState)
-            }
 
-            val partialState = try {
-                val posts = interactor.getPostDetail(postId)
-                mapper.mapToViewState(posts)
-            } catch (e: Exception) {
-                PartialPostDetailsViewState.ErrorState(e.message.toString())
-            }
+                val partialState = try {
+                    val posts = interactor.getPostDetail(view.postIdChannel().receive())
+                    mapper.mapToViewState(posts)
+                } catch (e: Exception) {
+                    PartialPostDetailsViewState.ErrorState(e.message.toString())
+                }
 
-            val finalState = reduce(partialState)
-            withContext(Dispatchers.Main) {
+                val finalState = reduce(partialState)
                 view.render(finalState)
             }
         }
     }
 
-    fun scrolledRecyclerView(firstItemVisible: Boolean) {
+    fun scrolledRecyclerView() {
         launch(context = job) {
-            withContext(Dispatchers.Main) {
-                val reducedState = reduce(PartialPostDetailsViewState.PostCollapsingState(firstItemVisible))
+            while (view.onScrollIntent().receive()) {
+                val reducedState = reduce(PartialPostDetailsViewState.PostCollapsingState(view.collapseStateChannel().receive()))
                 view.render(reducedState)
             }
         }
@@ -65,9 +67,5 @@ class PostDetailsPresenter @Inject constructor(private val interactor: PostDetai
             is PartialPostDetailsViewState.PostCollapsingState -> PostDetailsViewState(collapsePost = partialState.collapsePost, postDetails = actualViewState.postDetails)
         }
         return actualViewState
-    }
-
-    fun refresh(postId: Int) {
-        loadPostDetails(postId)
     }
 }
