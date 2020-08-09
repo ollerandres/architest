@@ -12,11 +12,13 @@ import com.andresoller.architest.adapters.PostsAdapter.PostNavigationListener
 import com.andresoller.domain.entities.PostInfo
 import com.andresoller.presentation.posts.PostsPresenter
 import com.andresoller.presentation.posts.PostsView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_posts.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.longToast
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
     @Inject
@@ -26,7 +28,6 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (application as ArchitestApplication).getUIComponent().inject(this)
         setContentView(R.layout.activity_posts)
 
         swipe_to_refresh_layout.setOnRefreshListener { presenter.onRetry() }

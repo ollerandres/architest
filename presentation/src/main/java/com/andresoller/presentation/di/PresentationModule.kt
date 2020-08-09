@@ -5,10 +5,13 @@ import com.andresoller.presentation.postdetail.PostDetailPresenter
 import com.andresoller.presentation.posts.PostsPresenter
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 class PresentationModule {
 
     @Provides

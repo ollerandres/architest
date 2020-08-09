@@ -5,11 +5,14 @@ import com.andresoller.data.remote.RemoteRepositoryImpl
 import com.andresoller.mlsearch.data.remote.ApiClient
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 class DataModule {
 
     val BASE_URL = "http://jsonplaceholder.typicode.com/"

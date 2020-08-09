@@ -13,11 +13,12 @@ import com.andresoller.architest.adapters.CommentsAdapter
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.presentation.postdetail.PostDetailPresenter
 import com.andresoller.presentation.postdetail.PostDetailView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import org.jetbrains.anko.design.snackbar
 import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class PostDetailActivity : AppCompatActivity(), PostDetailView {
 
     @Inject
@@ -28,7 +29,6 @@ class PostDetailActivity : AppCompatActivity(), PostDetailView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_detail)
-        (application as ArchitestApplication).getUIComponent().inject(this)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
