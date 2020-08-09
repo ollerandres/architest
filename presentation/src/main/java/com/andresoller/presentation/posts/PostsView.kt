@@ -4,7 +4,7 @@ import com.andresoller.domain.entities.PostInfo
 
 interface PostsView {
 
-    fun loadPosts(posts: ArrayList<PostInfo>)
+    fun loadPosts(posts: List<PostInfo>)
 
     fun displayErrorBanner(message: String)
 

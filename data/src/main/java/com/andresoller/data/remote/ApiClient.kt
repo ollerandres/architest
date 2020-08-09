@@ -1,9 +1,8 @@
-package com.andresoller.mlsearch.data.remote
+package com.andresoller.data.remote
 
 import com.andresoller.data.model.Comment
 import com.andresoller.data.model.Post
 import com.andresoller.data.model.User
-import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -11,14 +10,14 @@ import retrofit2.http.Query
 interface ApiClient {
 
     @GET("posts")
-    fun getPosts(): Observable<List<Post>>
+    suspend fun getPosts(): List<Post>
 
     @GET("users")
-    fun getUsers(): Observable<List<User>>
+    suspend fun getUsers(): List<User>
 
     @GET("comments")
-    fun getPostComments(@Query("postId")  postId: String): Observable<List<Comment>>
+    suspend fun getPostComments(@Query("postId") postId: String): List<Comment>
 
     @GET("posts/{postId}")
-    fun getPostDetail(@Path("postId") postId: String): Observable<Post>
+    suspend fun getPostDetail(@Path("postId") postId: String): Post
 }

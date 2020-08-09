@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data')
     implementation "com.google.dagger:hilt-android:" + rootProject.hiltVersion
     kapt "com.google.dagger:hilt-android-compiler:" + rootProject.hiltVersion
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"

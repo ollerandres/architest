@@ -1,4 +1,4 @@
-package com.andresoller.domain.mappers.postdetail
+package com.andresoller.data.mappers.postdetail
 
 import com.andresoller.data.model.Comment
 import com.andresoller.data.model.Post

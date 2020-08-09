@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.andresoller.architest.ArchitestApplication
 import com.andresoller.architest.EXTRA_POST_ID
 import com.andresoller.architest.R
 import com.andresoller.architest.adapters.PostsAdapter
@@ -47,11 +46,10 @@ class PostsActivity : AppCompatActivity(), PostsView, PostNavigationListener {
 
     override fun onPause() {
         super.onPause()
-        presenter.onPause()
         presenter.detachView()
     }
 
-    override fun loadPosts(posts: ArrayList<PostInfo>) {
+    override fun loadPosts(posts: List<PostInfo>) {
         adapter.updatePosts(posts)
     }
 

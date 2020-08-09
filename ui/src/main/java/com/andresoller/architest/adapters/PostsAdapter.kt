@@ -1,21 +1,21 @@
 package com.andresoller.architest.adapters
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import androidx.recyclerview.widget.RecyclerView
 import com.andresoller.architest.R
 import com.andresoller.domain.entities.PostInfo
 import kotlinx.android.synthetic.main.item_post.view.*
 import javax.inject.Inject
 
 
-class PostsAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
+class PostsAdapter @Inject constructor() : RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
 
-    private var posts: ArrayList<PostInfo> = ArrayList()
-    public var navigationListener: PostNavigationListener? = null
+    private var posts: List<PostInfo> = ArrayList()
+    var navigationListener: PostNavigationListener? = null
 
     interface PostNavigationListener {
         fun onPostTapped(postId: Int)
@@ -34,7 +34,7 @@ class PostsAdapter @Inject constructor() : androidx.recyclerview.widget.Recycler
         setScaleAnimation(holder.itemView)
     }
 
-    fun updatePosts(posts: ArrayList<PostInfo>) {
+    fun updatePosts(posts: List<PostInfo>) {
         this.posts = posts
         notifyDataSetChanged()
     }
@@ -45,7 +45,7 @@ class PostsAdapter @Inject constructor() : androidx.recyclerview.widget.Recycler
         view.startAnimation(anim)
     }
 
-    class PostViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(postInfo: PostInfo, navigationListener: PostNavigationListener?) {
             itemView.tv_title.text = postInfo.title

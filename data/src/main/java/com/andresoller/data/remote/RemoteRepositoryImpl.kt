@@ -1,27 +1,30 @@
 package com.andresoller.data.remote
 
-import com.andresoller.data.model.Comment
-import com.andresoller.data.model.Post
-import com.andresoller.data.model.User
-import com.andresoller.mlsearch.data.remote.ApiClient
-import io.reactivex.Observable
+import com.andresoller.data.mappers.postdetail.PostDetailMapper
+import com.andresoller.data.mappers.posts.PostMapper
+import com.andresoller.data.remote.errors.SafeFunctionExecutor
+import com.andresoller.domain.entities.PostDetailsInfo
+import com.andresoller.domain.entities.PostInfo
+import com.andresoller.domain.repositories.RemoteRepository
+import com.andresoller.domain.result.ArchitestResult
 import javax.inject.Inject
 
-class RemoteRepositoryImpl @Inject constructor(private val client: ApiClient) : RemoteRepository {
+class RemoteRepositoryImpl @Inject constructor(
+        private val client: ApiClient,
+        private val safeFunctionExecutor: SafeFunctionExecutor,
+        private val postMapper: PostMapper,
+        private val postDetailMapper: PostDetailMapper
+) : RemoteRepository {
 
-    override fun getPosts(): Observable<List<Post>> {
-        return client.getPosts()
+    override suspend fun getPosts(): ArchitestResult<List<PostInfo>> {
+        return safeFunctionExecutor.executeSafeFunction {
+            postMapper.mapToEntity(client.getPosts(), client.getUsers())
+        }
     }
 
-    override fun getPostDetail(postId: String): Observable<Post> {
-        return client.getPostDetail(postId)
-    }
-
-    override fun getUsers(): Observable<List<User>> {
-        return client.getUsers()
-    }
-
-    override fun getPostComments(postId: String): Observable<List<Comment>> {
-        return client.getPostComments(postId)
+    override suspend fun getPostDetail(postId: String): ArchitestResult<PostDetailsInfo> {
+        return safeFunctionExecutor.executeSafeFunction {
+            postDetailMapper.mapToEntity(client.getPostDetail(postId), client.getUsers(), client.getPostComments(postId))
+        }
     }
 }

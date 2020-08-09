@@ -4,8 +4,8 @@ import com.andresoller.data.model.*
 import com.andresoller.data.remote.RemoteRepository
 import com.andresoller.domain.entities.PostDetailsInfo
 import com.andresoller.domain.entities.PostInfo
-import com.andresoller.domain.mappers.postdetail.PostDetailMapperImpl
-import com.andresoller.domain.mappers.posts.PostMapperImpl
+import com.andresoller.data.mappers.postdetail.PostDetailMapperImpl
+import com.andresoller.data.mappers.posts.PostMapperImpl
 import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test
@@ -21,9 +21,9 @@ class PostsInteractorImplTest {
     @Mock
     lateinit var repository: RemoteRepository
     @Mock
-    lateinit var postMapper: PostMapperImpl
+    lateinit var postMapper: com.andresoller.data.mappers.posts.PostMapperImpl
     @Mock
-    lateinit var postDetailMapper: PostDetailMapperImpl
+    lateinit var postDetailMapper: com.andresoller.data.mappers.postdetail.PostDetailMapperImpl
     @InjectMocks
     lateinit var interactor: PostsInteractorImpl
 

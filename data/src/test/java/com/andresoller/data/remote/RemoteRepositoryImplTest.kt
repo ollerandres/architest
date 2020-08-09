@@ -3,7 +3,6 @@ package com.andresoller.data.remote
 import com.andresoller.data.model.Comment
 import com.andresoller.data.model.Post
 import com.andresoller.data.model.User
-import com.andresoller.mlsearch.data.remote.ApiClient
 import io.reactivex.Observable
 import junit.framework.Assert.assertEquals
 import org.junit.Before

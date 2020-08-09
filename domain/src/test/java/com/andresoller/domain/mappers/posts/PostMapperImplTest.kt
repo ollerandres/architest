@@ -10,7 +10,7 @@ import org.mockito.MockitoAnnotations
 class PostMapperImplTest {
 
     @InjectMocks
-    lateinit var postMapper: PostMapperImpl
+    lateinit var postMapper: com.andresoller.data.mappers.posts.PostMapperImpl
 
     @Before
     fun setUp() {

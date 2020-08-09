@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations
 class PostDetailMapperImplTest {
 
     @InjectMocks
-    lateinit var postDetailMapper: PostDetailMapperImpl
+    lateinit var postDetailMapper: com.andresoller.data.mappers.postdetail.PostDetailMapperImpl
 
     @Before
     fun setUp() {

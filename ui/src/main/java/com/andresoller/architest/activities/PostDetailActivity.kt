@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.andresoller.architest.ArchitestApplication
 import com.andresoller.architest.EXTRA_POST_ID
 import com.andresoller.architest.R
 import com.andresoller.architest.adapters.CommentsAdapter
@@ -54,7 +53,6 @@ class PostDetailActivity : AppCompatActivity(), PostDetailView {
 
     override fun onPause() {
         super.onPause()
-        presenter.onPause()
         presenter.detachView()
     }
 

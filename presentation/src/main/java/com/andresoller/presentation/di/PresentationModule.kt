@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
 
 @Module
@@ -17,12 +16,12 @@ class PresentationModule {
     @Provides
     @Singleton
     fun providePostPresenter(postsInteractor: PostsInteractor): PostsPresenter {
-        return PostsPresenter(postsInteractor, CompositeDisposable())
+        return PostsPresenter(postsInteractor)
     }
 
     @Provides
     @Singleton
     fun providePostDetailPresenter(postsInteractor: PostsInteractor): PostDetailPresenter {
-        return PostDetailPresenter(postsInteractor, CompositeDisposable())
+        return PostDetailPresenter(postsInteractor)
     }
 }

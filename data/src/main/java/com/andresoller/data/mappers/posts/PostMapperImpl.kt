@@ -1,4 +1,4 @@
-package com.andresoller.domain.mappers.posts
+package com.andresoller.data.mappers.posts
 
 import com.andresoller.data.model.Post
 import com.andresoller.data.model.User
@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class PostMapperImpl @Inject constructor() : PostMapper {
 
-    override fun mapToEntity(posts: List<Post>, users: List<User>): ArrayList<PostInfo> {
+    override fun mapToEntity(posts: List<Post>, users: List<User>): List<PostInfo> {
         val postsInfo = ArrayList<PostInfo>()
         for (post in posts) {
             val user = users.find { it.id == post.userId }
