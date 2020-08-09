@@ -6,7 +6,7 @@
 * RxJava
 * Coroutines
 * Kotlin
-* Dagger
+* -Dagger- HILT
 * Unit Testing with Mockito
 * Instrumented Testing using Espresso
 * Retrofit
